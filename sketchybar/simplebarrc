@@ -1,0 +1,56 @@
+#!/bin/sh
+
+PLUGIN_DIR="$CONFIG_DIR/plugins"
+GREEN=0xbf75fb4c
+PINK=0xbfd23cf6
+
+bar=(
+  color=0x001b45ae
+  height=32
+  sticky=on
+  padding_left=7
+  padding_right=7
+)
+
+default=(
+  icon.drawing=off
+  label.padding_left=6
+  label.padding_right=6
+  label.color=$PINK
+  label.font="Monocraft:Regular:12.0"
+)
+
+sketchybar \
+  --bar "${bar[@]}" \
+  --default "${default[@]}"
+
+sketchybar \
+  --add item space left \
+  --set space script='sketchybar --set $NAME label="[$(echo "$INFO" | jq .[])]"'\
+  --subscribe space space_change
+
+
+sketchybar \
+  --add item app_name left \
+  --set app_name label.color=$GREEN \
+  --set app_name script='sketchybar --set $NAME label="$INFO"' \
+  --subscribe app_name front_app_switched
+
+sketchybar \
+  --add item time right \
+  --set time script='sketchybar --set $NAME label="$(date +"%a %d %b %I:%M %p")"' \
+             update_freq=30 \
+  --subscribe time system_woke
+
+sketchybar \
+  --add item battery right \
+  --set battery update_freq=120 script="$PLUGIN_DIR/simple_battery.sh" \
+  --subscribe battery system_woke power_source_change
+
+sketchybar \
+  --add item quote right \
+  --set quote label.color=$GREEN \
+  --set quote script='sketchybar --set $NAME label="get busy living, or get busy dying"' \
+  --subscribe quote
+
+sketchybar --update

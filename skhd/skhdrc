@@ -1,0 +1,86 @@
+# moves focus between spaces 
+hyper - 1 : yabai -m space --focus 1
+hyper - 2 : yabai -m space --focus 2
+hyper - 3 : yabai -m space --focus 3
+hyper - 4 : yabai -m space --focus 4
+hyper - 5 : yabai -m space --focus 5
+hyper - 6 : yabai -m space --focus 6
+hyper - 7 : yabai -m space --focus 7
+hyper - 8 : yabai -m space --focus 8
+
+# move focus to recent space
+hyper - u: yabai -m space --focus recent
+
+# send window to a space
+rcmd - 1 : yabai -m window --space 1
+rcmd - 2 : yabai -m window --space 2
+rcmd - 3 : yabai -m window --space 3
+rcmd - 4 : yabai -m window --space 4
+rcmd - 5 : yabai -m window --space 5
+rcmd - 6 : yabai -m window --space 6
+rcmd - 7 : yabai -m window --space 7
+rcmd - 8 : yabai -m window --space 8
+
+# send window to a space and follow focus
+rcmd + rshift - 1 : yabai -m window --space 1 --focus
+rcmd + rshift - 2 : yabai -m window --space 2 --focus
+rcmd + rshift - 3 : yabai -m window --space 3 --focus
+rcmd + rshift - 6 : yabai -m window --space 6 --focus
+rcmd + rshift - 7 : yabai -m window --space 7 --focus
+rcmd + rshift - 8 : yabai -m window --space 8 --focus
+
+# swap current space order with the next spaces
+hyper - 0x21: yabai -m space --move prev && yabai -m space --focus next
+hyper - 0x1E: yabai -m space --move next && yabai -m space --focus prev 
+
+# create a new space, move window and follow focus
+hyper - n : yabai -m space --create && \
+                  index="$(yabai -m query --displays --display | jq '.spaces[-1]')" && \
+                  yabai -m window --space "${index}" && \
+                  yabai -m space --focus "${index}"
+# create a new space and follow focus (no window movement)
+alt - n: yabai -m space --create && \
+                  index="$(yabai -m query --displays --display | jq '.spaces[-1]')" && \
+                  yabai -m space --focus "${index}"
+
+# remove transitions from switching spaces
+hyper - d : yabai -m space --focus next
+hyper - a : yabai -m space --focus prev
+
+# change window focus within space
+hyper - e : yabai -m window --focus south
+hyper - w : yabai -m window --focus north
+hyper - q : yabai -m window --focus west
+hyper - r : yabai -m window --focus east
+
+# rotate windows within a space
+hyper - t : yabai -m space --rotate 90
+
+# maximize a window
+hyper - m : yabai -m window --toggle zoom-fullscreen
+
+# balance out tree of windows (resize to occupy same area)
+hyper - y: yabai -m space --balance
+
+# stack on top of previous window
+hyper - 0: yabai -m window --stack prev
+hyper - 9: yabai -m window --toggle float && yabai -m window --toggle float
+# cycle through stack
+hyper - 0x18 : yabai -m window --focus stack.next || yabai -m window --focus stack.first
+hyper - 0x1B : yabai -m window --focus stack.prev || yabai -m window --focus stack.last
+
+hyper - left : yabai -m window --resize right:-20:0 2> /dev/null || yabai -m window --resize left:-20:0 2> /dev/null
+hyper - down : yabai -m window --resize bottom:0:20 2> /dev/null || yabai -m window --resize top:0:20 2> /dev/null
+hyper - up : yabai -m window --resize bottom:0:-20 2> /dev/null || yabai -m window --resize top:0:-20 2> /dev/null
+hyper - right : yabai -m window --resize right:20:0 2> /dev/null || yabai -m window --resize left:20:0 2> /dev/null
+
+# stop/start/restart yabai
+ctrl + alt - q : yabai --stop-service
+ctrl + alt - s : yabai --start-service
+ctrl + alt - r : yabai --restart-service
+
+# Open iterm2.
+hyper - return : ~/.config/skhd/scripts/open_iterm2.sh
+
+# Open Google Chrome.
+hyper - 0x27 : open -na "Google Chrome" --args --profile-directory="Default"
